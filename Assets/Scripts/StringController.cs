@@ -14,6 +14,7 @@ public class StringController : MonoBehaviour
     public float maxStretch;
 
     public GameObject outgoingStringTarget;
+    public GameObject incomingStringTarget;
 
     bool dragging;
     public GameObject herringCover;
@@ -87,13 +88,20 @@ public class StringController : MonoBehaviour
     private void SetAsHerring()
     {
         DestroyString();
+        if (incomingStringTarget != null) 
+        {
+            incomingStringTarget.GetComponent<StringController>().DestroyString();
+        }
+
         instantiatedHerring = Instantiate(herringCover);
         instantiatedHerring.transform.localScale = Vector3.one * .44f;
 
         instantiatedHerring.transform.SetParent(this.transform);
+
         Vector3 position = instantiatedHerring.transform.localPosition;
         position = new Vector3(0, 0, -.1f);
         instantiatedHerring.transform.localPosition = position;
+
         isHerring = true;
     }
 
@@ -193,6 +201,7 @@ public class StringController : MonoBehaviour
             if (!CheckIfSamePaper())
             {
                 currentDragOrigin.outgoingStringTarget = this.gameObject;
+                incomingStringTarget = currentDragOrigin.gameObject;
                 return true;
             }
 
@@ -229,7 +238,10 @@ public class StringController : MonoBehaviour
 
     void DestroyString()
     {
-
+        if (outgoingStringTarget != null)
+        {
+            outgoingStringTarget.GetComponent<StringController>().incomingStringTarget = null;
+        }
         outgoingStringTarget = null;
         foreach (GameObject stringChunk in instantiatedStrings)
         {
