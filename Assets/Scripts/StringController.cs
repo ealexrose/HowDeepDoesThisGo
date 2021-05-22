@@ -6,7 +6,7 @@ public class StringController : MonoBehaviour
 {
     static StringController currentDragOrigin;
 
-
+    public GameObject directionIndicator;
     public DataDisplay dataDisplay;
     public List<GameObject> strings;
     public List<GameObject> instantiatedStrings;
@@ -19,12 +19,12 @@ public class StringController : MonoBehaviour
     bool dragging;
     public GameObject herringCover;
     GameObject instantiatedHerring;
-    bool isHerring;
+    public bool isHerring;
+
     private void Update()
     {
         if (dragging == true && Input.GetButtonUp("Fire1"))
         {
-            Debug.Log("Look for valid snap point");
 
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
@@ -32,17 +32,18 @@ public class StringController : MonoBehaviour
             {
                 if (hit.collider.gameObject.GetComponent<StringController>())
                 {
-                    Debug.Log("Target Position: " + hit.collider.gameObject.transform.position);
                     bool success = hit.collider.gameObject.GetComponent<StringController>().TryAttachString();
                     if (!success)
                     {
                         DestroyString();
                     }
+
                 }
                 else
                 {
                     DestroyString();
                 }
+                FindObjectOfType<SolveChecker>().CheckForValidSolution();
             }
             else
             {
@@ -61,12 +62,15 @@ public class StringController : MonoBehaviour
                 {
                     if (isHerring)
                     {
+
                         UnSetHerring();
+                        FindObjectOfType<SolveChecker>().CheckForValidSolution();
                     }
                     else
                     {
 
                         SetAsHerring();
+                        FindObjectOfType<SolveChecker>().CheckForValidSolution();
                     }
                 }
             }
@@ -83,26 +87,31 @@ public class StringController : MonoBehaviour
     {
         Destroy(instantiatedHerring);
         isHerring = false;
+        FindObjectOfType<GameController>().AddHerring(); ;
     }
 
     private void SetAsHerring()
     {
-        DestroyString();
-        if (incomingStringTarget != null) 
+        if (FindObjectOfType<GameController>().availableHerrings > 0)
         {
-            incomingStringTarget.GetComponent<StringController>().DestroyString();
+            FindObjectOfType<GameController>().RemoveHerring();
+            DestroyString();
+            if (incomingStringTarget != null)
+            {
+                incomingStringTarget.GetComponent<StringController>().DestroyString();
+            }
+
+            instantiatedHerring = Instantiate(herringCover);
+            instantiatedHerring.transform.localScale = Vector3.one * .44f;
+
+            instantiatedHerring.transform.SetParent(this.transform);
+
+            Vector3 position = instantiatedHerring.transform.localPosition;
+            position = new Vector3(0, 0, -.1f);
+            instantiatedHerring.transform.localPosition = position;
+
+            isHerring = true;
         }
-
-        instantiatedHerring = Instantiate(herringCover);
-        instantiatedHerring.transform.localScale = Vector3.one * .44f;
-
-        instantiatedHerring.transform.SetParent(this.transform);
-
-        Vector3 position = instantiatedHerring.transform.localPosition;
-        position = new Vector3(0, 0, -.1f);
-        instantiatedHerring.transform.localPosition = position;
-
-        isHerring = true;
     }
 
     void OnMouseDown()
@@ -110,7 +119,7 @@ public class StringController : MonoBehaviour
         if (!isHerring)
         {
             DestroyString();
-
+            directionIndicator.SetActive(true);
             instantiatedStrings.Add(Instantiate(strings[Random.Range(0, strings.Count)]));
             currentDragOrigin = this.gameObject.GetComponent<StringController>();
             dragging = true;
@@ -128,9 +137,16 @@ public class StringController : MonoBehaviour
 
             int requiredChunks = (int)Mathf.Ceil((worldPosition - thisPosition).magnitude / maxStretch);
 
-
+            AlignIndicator(thisPosition, worldPosition);
             TileStretch(requiredChunks, thisPosition, worldPosition);
         }
+    }
+
+    private void AlignIndicator(Vector3 thisPosition, Vector3 worldPosition)
+    {
+        Vector3 direction = (worldPosition - thisPosition);
+        direction = direction.normalized;
+        directionIndicator.transform.right = direction;//Quaternion.Euler(0, 0, Mathf.Atan(direction.y/ direction.y) * Mathf.Rad2Deg);
     }
 
     void UpdateString()
@@ -142,6 +158,7 @@ public class StringController : MonoBehaviour
 
         int requiredChunks = (int)Mathf.Ceil((worldPosition - thisPosition).magnitude / maxStretch);
 
+        AlignIndicator(thisPosition, worldPosition);
         TileStretch(requiredChunks, thisPosition, worldPosition);
     }
 
@@ -200,9 +217,13 @@ public class StringController : MonoBehaviour
         {
             if (!CheckIfSamePaper())
             {
-                currentDragOrigin.outgoingStringTarget = this.gameObject;
-                incomingStringTarget = currentDragOrigin.gameObject;
-                return true;
+                if (incomingStringTarget == null)
+                {
+                    currentDragOrigin.outgoingStringTarget = this.gameObject;
+                    incomingStringTarget = currentDragOrigin.gameObject;
+                    return true;
+                }
+
             }
 
         }
@@ -236,8 +257,9 @@ public class StringController : MonoBehaviour
         return false;
     }
 
-    void DestroyString()
+    public void DestroyString()
     {
+        directionIndicator.SetActive(false);
         if (outgoingStringTarget != null)
         {
             outgoingStringTarget.GetComponent<StringController>().incomingStringTarget = null;
@@ -249,4 +271,6 @@ public class StringController : MonoBehaviour
         }
         instantiatedStrings = new List<GameObject>();
     }
+
+
 }

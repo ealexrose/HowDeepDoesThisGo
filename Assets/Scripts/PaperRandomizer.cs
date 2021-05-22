@@ -44,9 +44,5 @@ public class PaperRandomizer : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
 }

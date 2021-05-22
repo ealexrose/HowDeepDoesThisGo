@@ -16,6 +16,13 @@ public class DataDisplay : MonoBehaviour
     void Start()
     {
         ConfigureDisplay(node);
+
+        float scaleFactor = Mathf.Min(transform.parent.parent.parent.localScale.x, transform.parent.parent.parent.localScale.y);
+
+        Transform temp = transform.parent;
+        transform.parent = null;
+        transform.localScale = Vector3.one * (scaleFactor)* .8f;
+        transform.parent = temp;
     }
 
     private void ConfigureDisplay(DataNode node)
@@ -44,6 +51,10 @@ public class DataDisplay : MonoBehaviour
             {
                 number.color = FindObjectOfType<PaperRandomizer>().colors[node.signifiers[1]];
             }
+        }
+        else 
+        {
+            number.text = "";
         }
     }
 }
