@@ -17,11 +17,11 @@ public class DataDisplay : MonoBehaviour
     {
         ConfigureDisplay(node);
 
-        float scaleFactor = Mathf.Min(transform.parent.parent.parent.localScale.x, transform.parent.parent.parent.localScale.y);
+        //float scaleFactor = 1f;//Mathf.Min(transform.parent.parent.parent.localScale.x, transform.parent.parent.parent.localScale.y);
 
         Transform temp = transform.parent;
         transform.parent = null;
-        transform.localScale = Vector3.one * (scaleFactor)* .8f;
+        //transform.localScale = Vector3.one * (scaleFactor)* .8f;
         transform.parent = temp;
     }
 

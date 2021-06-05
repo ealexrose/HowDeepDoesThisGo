@@ -18,7 +18,10 @@ public class PaperRandomizer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Instantiate(paperTypes[Random.Range(0, paperTypes.Count)], textSpawnPoint.transform);
+        SetEvidenceType();
+
+
+        
         occupiedDataNodes = new bool[dataNodeRoot.transform.childCount];
 
         foreach (DataNode newNode in dataNodeInfo) 
@@ -40,9 +43,16 @@ public class PaperRandomizer : MonoBehaviour
 
             GameObject instantiatedNode = Instantiate(dataNodeBase, dataNodeRoot.transform.GetChild(pickedNode));
             instantiatedNode.GetComponent<DataDisplay>().node = newNode;
+
         
         }
     }
 
+    private void SetEvidenceType()
+    {
+        int paperType = Random.Range(dataNodeInfo.Count, 7);
 
+        GameObject spawnedPaper = Instantiate(paperTypes[paperType], this.transform);
+        dataNodeRoot = spawnedPaper;
+    }
 }

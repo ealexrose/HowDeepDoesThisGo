@@ -21,11 +21,12 @@ public class PaperController : MonoBehaviour
         CleanBoard();
 
         spawnedPapers = new List<GameObject>();
+
         for (int i = 0; i < paperCount; i++)
         {
             spawnedPapers.Add(Instantiate(paperBase, corkBoard.transform));
             spawnedPapers[i].transform.position = new Vector3(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-2.1f, 3.8f), -i * 0.25f);
-            spawnedPapers[i].transform.localScale = new Vector3(UnityEngine.Random.Range(0.4f, .8f), UnityEngine.Random.Range(0.4f, .8f), 1);
+            //spawnedPapers[i].transform.localScale = new Vector3(UnityEngine.Random.Range(0.4f, .8f), UnityEngine.Random.Range(0.4f, .8f), 1);
             spawnedPapers[i].GetComponent<PaperRandomizer>().dataNodeInfo = new List<DataNode>();
 
         }
