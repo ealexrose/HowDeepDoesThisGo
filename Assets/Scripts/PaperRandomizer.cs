@@ -42,6 +42,8 @@ public class PaperRandomizer : MonoBehaviour
             occupiedDataNodes[pickedNode] = true;
 
             GameObject instantiatedNode = Instantiate(dataNodeBase, dataNodeRoot.transform.GetChild(pickedNode));
+            // instantiatedNode.transform.parent = dataNodeRoot.transform.GetChild(pickedNode);
+            instantiatedNode.transform.localPosition = Vector3.Scale(instantiatedNode.transform.localPosition, new Vector3(0f, 0f, 1f));
             instantiatedNode.GetComponent<DataDisplay>().node = newNode;
 
         

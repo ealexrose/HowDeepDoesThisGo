@@ -4,17 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class SceneNavigation : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void QuitGame()
     {
@@ -29,5 +18,10 @@ public class SceneNavigation : MonoBehaviour
     public void LoseGame()
     {
         SceneManager.LoadScene("LoseScene");
+    }
+
+    public void PlayGame() 
+    {
+        SceneManager.LoadScene("SampleScene");
     }
 }

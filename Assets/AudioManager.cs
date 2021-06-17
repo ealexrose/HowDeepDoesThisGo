@@ -6,6 +6,7 @@ using System;
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
+    public Sound[] music;
     public AudioMixer audioMixer;
     public static AudioManager instance;
 
@@ -30,9 +31,26 @@ public class AudioManager : MonoBehaviour
             sound.source.volume = sound.volume;
             sound.source.pitch = sound.pitch;
             sound.source.loop = sound.loop;
+            sound.source.outputAudioMixerGroup = sound.audioMixerGroup;
 
         }
+        foreach (Sound sound in music)
+        {
+            sound.source = gameObject.AddComponent<AudioSource>();
+            sound.source.clip = sound.clip;
+            sound.source.volume = sound.volume;
+            sound.source.pitch = sound.pitch;
+            sound.source.loop = sound.loop;
+            sound.source.outputAudioMixerGroup = sound.audioMixerGroup;
+        }
     }
+
+
+    public void Start()
+    {
+        PlayMusic("MainMusic");
+    }
+
 
     public void Play(string name)
     {
@@ -45,6 +63,18 @@ public class AudioManager : MonoBehaviour
 
         s.source.Play();
 
+    }
+
+    public void PlayMusic(string name) 
+    {
+        Sound s = Array.Find(music, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return;
+        }
+
+        s.source.Play();
     }
 
     public void SetVolume(string audioMixerGroup, float volume) 
