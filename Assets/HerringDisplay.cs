@@ -1,42 +1,137 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HerringDisplay : MonoBehaviour
 {
     public GameObject prefabHerring;
     public List<GameObject> displayedHerrings;
+    public float columnSpacing;
+    public float rowSpacing;
+    public int maxColumnsBeforeOverflow;
+    int currentHerrings;
 
     private void Start()
     {
+        currentHerrings = 0;
         displayedHerrings = new List<GameObject>();
     }
 
-    private void Update()
-    {
-        //UpdateHerringDisplay();
-    }
 
-    public void UpdateHerringDisplay() 
+    public void UpdateHerringDisplay()
     {
-        int herringCount = FindObjectOfType<GameController>().availableHerrings;
-        
-        if (displayedHerrings.Count != herringCount) 
+        //herringcount is the amount of herrings we need to display
+        //displayedHerringCount is the amount of herrings we currently display
+
+        int requiredHerrings = FindObjectOfType<GameController>().availableHerrings;
+
+        if (currentHerrings < requiredHerrings)
         {
-            foreach (GameObject spawnedHerringDisplay in displayedHerrings) 
+            for (int i = displayedHerrings.Count; i < requiredHerrings; i++)
             {
-                Destroy(spawnedHerringDisplay);
+                displayedHerrings.Add(null);
             }
-            displayedHerrings = new List<GameObject>();
+
+            //Animate in herring here
+            for (int i = currentHerrings; i < requiredHerrings; i++)
+            {
+                AddHerring(i);
+            }
+        }
+        else if (currentHerrings > requiredHerrings)
+        {
+            for (int i = currentHerrings; i > requiredHerrings; --i)
+            {
+                RemoveHerring(i - 1);
+
+            }
+        }
+        else
+        {
+            //we mad chillin here B^)
         }
 
-        for (int i = 0; i < herringCount; i++) 
+        currentHerrings = requiredHerrings;
+
+    }
+
+    private void RemoveHerring(int index)
+    {
+
+        StartCoroutine(AnimateHerringOut(displayedHerrings[index]));
+        displayedHerrings[index] = null;
+
+    }
+
+    private void AddHerring(int index)
+    {
+        displayedHerrings[index] = Instantiate(prefabHerring, this.transform);
+        Vector3 target = new Vector3(columnSpacing * (index % maxColumnsBeforeOverflow), rowSpacing * (index / maxColumnsBeforeOverflow), 0);
+        StartCoroutine(AnimateHerringIn(displayedHerrings[index], target));
+        //displayedHerrings[index].GetComponent<RectTransform>().localPosition = new Vector3(columnSpacing * (index % maxColumnsBeforeOverflow), rowSpacing *  (index / maxColumnsBeforeOverflow), 0);
+    }
+
+    #region animations
+    IEnumerator AnimateHerringIn(GameObject herring, Vector3 endPosition)
+    {
+        Image image = herring.GetComponent<Image>();
+
+        float time = .3f;
+
+        image.color = new Color(1f, 1f, 1f, 0f);
+        Vector3 startPosition = endPosition + (Vector3.up * rowSpacing * .2f);
+        Vector3 endScale = herring.transform.localScale;
+        herring.transform.localPosition = startPosition;
+
+        float startRotation = UnityEngine.Random.Range(-9, 9) * 5;
+        float endRotation = -startRotation;
+        herring.transform.localRotation = Quaternion.Euler(0, 0, startRotation);
+
+
+        yield return new WaitForSeconds(.02f * (float)UnityEngine.Random.Range(1, 30));
+
+        for (float i = 0; i < time; i += Time.deltaTime)
+        {
+            herring.transform.localPosition = Vector3.Lerp(startPosition, endPosition, i / time);
+            herring.transform.localScale = Vector3.Lerp(endScale * 3, endScale, i / time);
+            herring.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Lerp(startRotation, endRotation, i / time));
+            image.color = new Color(1f, 1f, 1f, (i / time) * (i / time));
+            yield return null;
+        }
+    }
+
+    IEnumerator AnimateHerringOut(GameObject herring)
+    {
+        Image image = herring.GetComponent<Image>();
+
+        Vector3 startPosition = herring.transform.localPosition;
+
+
+        GameObject awful = new GameObject();
+        GameObject herringContainer = Instantiate(awful, transform);
+        Destroy(awful);
+
+        herringContainer.transform.localPosition = herring.transform.localPosition;
+        herring.transform.SetParent(herringContainer.transform);
+
+
+        Vector3 endPosition = startPosition + (Vector3.down * rowSpacing * .8f);
+        Debug.Log(startPosition + " " + endPosition);
+        float time = .2f;
+        for (float i = 0; i < time; i += Time.deltaTime)
         {
 
-            displayedHerrings.Add(Instantiate(prefabHerring, this.transform));
-            displayedHerrings[i].GetComponent<RectTransform>().localPosition = new Vector3(0, -165 * i, 0);
+            herringContainer.transform.localScale = new Vector3(Mathf.Lerp(1f, .4f, i / time), 1, 1);
+            herringContainer.transform.localPosition = Vector3.Lerp(startPosition, endPosition, i / time);
+            image.color = new Color(1f, 1f, 1f, 1 - ((i / time) * (i / time)));
+            yield return null;
         }
-    
+
+        Destroy(herringContainer);
+
     }
+    #endregion
 
 }

@@ -32,8 +32,12 @@ public class PaperController : MonoBehaviour
             spawnedPapers.Add(Instantiate(paperBase, corkBoard.transform));
 
 
-            spawnedPapers[i].transform.position = GetValidSpawnPosition()+(Vector3.back * (i+1f) *.4f); //new Vector3(UnityEngine.Random.Range(-6f, 6f), UnityEngine.Random.Range(-2.1f, 3.8f), -i * 0.25f);
-            //spawnedPapers[i].transform.localScale = new Vector3(UnityEngine.Random.Range(0.4f, .8f), UnityEngine.Random.Range(0.4f, .8f), 1);
+            spawnedPapers[i].transform.position = new Vector3(10, -10, 0);
+            Vector3 targetPosition = GetValidSpawnPosition() + (Vector3.back * (i + 1f) * .6f);
+            StartCoroutine(SlideEvidenceIn(spawnedPapers[i], targetPosition, i));
+
+
+
             spawnedPapers[i].GetComponent<PaperRandomizer>().dataNodeInfo = new List<DataNode>();
 
         }
@@ -87,9 +91,21 @@ public class PaperController : MonoBehaviour
             spawnedPapers[randomPaper].GetComponent<PaperRandomizer>().dataNodeInfo.Add(redHerrings[i]);
         }
     }
+    private void CleanBoard()
+    {
+        StringController[] stringControllers = FindObjectsOfType<StringController>();
 
+        foreach (StringController stringController in stringControllers)
+        {
+            stringController.DestroyString();
+        }
+        foreach (GameObject spawnedpaper in spawnedPapers)
+        {
+            Destroy(spawnedpaper);
+        }
+    }
 
-
+    #region board utilities
     private Vector3 GetValidSpawnPosition()
     {
         float randomRegionValue = UnityEngine.Random.Range(0f, 1f);
@@ -105,12 +121,12 @@ public class PaperController : MonoBehaviour
             }
         }
         BoxCollider2D region = spawnRegions[selectedRegion].GetComponent<BoxCollider2D>();
-        float randX = UnityEngine.Random.Range(-region.size.x/2f, region.size.x/2f) * spawnRegions[selectedRegion].transform.localScale.x;
-        float randY = UnityEngine.Random.Range(-region.size.y/2f, region.size.y/2f) * spawnRegions[selectedRegion].transform.localScale.y;
+        float randX = UnityEngine.Random.Range(-region.size.x / 2f, region.size.x / 2f) * spawnRegions[selectedRegion].transform.localScale.x;
+        float randY = UnityEngine.Random.Range(-region.size.y / 2f, region.size.y / 2f) * spawnRegions[selectedRegion].transform.localScale.y;
 
         Vector3 spawnPosition = new Vector3(randX, randY, 0f) + spawnRegions[selectedRegion].transform.position;
         return spawnPosition;
-        }
+    }
 
     private void SetRegionWeights()
     {
@@ -136,23 +152,48 @@ public class PaperController : MonoBehaviour
         }
     }
 
-    private void CleanBoard()
-    {
-        StringController[] stringControllers = FindObjectsOfType<StringController>();
 
-        foreach (StringController stringController in stringControllers)
+    public void ReorderPapers(int newTop) 
+    {
+        spawnedPapers.Add(spawnedPapers[newTop]);
+        spawnedPapers.RemoveAt(newTop);
+        for (int i = 0; i < spawnedPapers.Count; i++) 
         {
-            stringController.DestroyString();
+            spawnedPapers[i].transform.localPosition = new Vector3(spawnedPapers[i].transform.localPosition.x, spawnedPapers[i].transform.localPosition.y, (i + 1f) * -.6f);
         }
-        foreach (GameObject spawnedpaper in spawnedPapers)
-        {
-            Destroy(spawnedpaper);
-        }
+    
     }
 
-    // Update is called once per frame
-    void Update()
+    public int GetPaperIndex(GameObject targetPaper) 
     {
+        for (int i = 0; i < spawnedPapers.Count; i++) 
+        {
+            if (spawnedPapers[i] == targetPaper) 
+            {
+                return i;
+            }
+        }
+        return spawnedPapers.Count - 1;
+    }
+    #endregion
+
+
+    #region animations
+
+    IEnumerator SlideEvidenceIn(GameObject evidence, Vector3 endPosition, int delayOrder)
+    {
+        float time = .45f;
+        float delay = ((float)delayOrder + 1) * .25f;
+        Vector3 startPosition = new Vector3(10, -10, 0);
+        yield return new WaitForSeconds(delay);
+
+        for (float i = 0; i < time; i += Time.deltaTime)
+        {
+            evidence.transform.position = Vector3.Lerp(startPosition, endPosition, (i / time) * (i / time));
+            yield return null;
+        }
 
     }
+
+    #endregion
 }

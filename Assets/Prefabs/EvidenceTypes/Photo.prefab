@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 3841911382123375591}
   - component: {fileID: 8700676961116498214}
   - component: {fileID: 2926113646335247228}
+  - component: {fileID: 253172416048139236}
   m_Layer: 0
   m_Name: Photo
   m_TagString: Untagged
@@ -175,3 +176,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragParent: 1
+--- !u!114 &253172416048139236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3760528518673914424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19ab1f38724e4e4e86fc6464b504d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: -0.1, y: -0.1, z: 0.1}
+  material: {fileID: 2100000, guid: eb054a3135e267645bbb8d0c634a790d, type: 2}

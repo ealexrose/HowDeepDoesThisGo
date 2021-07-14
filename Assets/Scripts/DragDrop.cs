@@ -13,18 +13,21 @@ public class DragDrop : MonoBehaviour
 
     private Camera myMainCamera;
     private Transform target;
-
+    private ShadowEffect shadowEffect;
+    private bool dragging;
+    public Vector3 shadowOffset = new Vector3(-1, -1, 0);
     void Start()
     {
+        shadowEffect = GetComponent<ShadowEffect>();
         target = transform;
         myMainCamera = Camera.main; // Camera.main is expensive ; cache it here
         if (dragParent)
         {
 
-                target = transform.parent;
-            
+            target = transform.parent;
+
         }
-        else 
+        else
         {
             target = transform;
         }
@@ -32,6 +35,14 @@ public class DragDrop : MonoBehaviour
 
     void OnMouseDown()
     {
+        dragging = true;
+
+        target.position += Vector3.one * .25f;
+        shadowEffect.offset += shadowOffset;
+        PaperController paperController = FindObjectOfType<PaperController>();
+        int myIndex = paperController.GetPaperIndex(transform.parent.gameObject);
+        paperController.ReorderPapers(myIndex);
+
         dragPlane = new Plane(myMainCamera.transform.forward, target.position);
         Ray camRay = myMainCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -47,5 +58,16 @@ public class DragDrop : MonoBehaviour
         float planeDist;
         dragPlane.Raycast(camRay, out planeDist);
         target.position = camRay.GetPoint(planeDist) + offset;
+
+    }
+
+    private void OnMouseUp()
+    {
+        if (dragging)
+        {
+            target.position -= Vector3.one * .25f;
+            shadowEffect.offset -= shadowOffset;
+            dragging = false;
+        }
     }
 }

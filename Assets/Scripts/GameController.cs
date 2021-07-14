@@ -23,7 +23,7 @@ public class GameController : MonoBehaviour
     public DataNode[] redHerringNodes;
     public SolveChecker solveChecker;
 
-    public TextMeshProUGUI chainDisplay;
+    public WhiteBoardController chainDisplay;
     [SerializeField]
     public List<Vector4> progressionValues;
     int progression = 0;
@@ -109,7 +109,8 @@ public class GameController : MonoBehaviour
 
         allowedPatterns = new bool[] { allowShapePatterns, allowColorPatterns, allowNumberPatterns };
         availableHerrings = redHerrings;
-        chainDisplay.text = chains + " chains of " + chainLength + " nodes required";
+        string display = chains.ToString() + " chains of " + chainLength.ToString() + " nodes required";
+        chainDisplay.EraseWrite(display);
 
         FindObjectOfType<HerringDisplay>().UpdateHerringDisplay();
         FindObjectOfType<CountDownController>().progress -= 7.5f;

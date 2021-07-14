@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 6333152762643147119}
   - component: {fileID: 7003129794122961656}
   - component: {fileID: 7012966050011517945}
+  - component: {fileID: 3046231275564274168}
   m_Layer: 0
   m_Name: Receipt
   m_TagString: Untagged
@@ -178,6 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragParent: 1
+  shadowOffset: {x: -2, y: -2, z: 0}
 --- !u!61 &7012966050011517945
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -204,3 +206,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 16.999998, y: 28.009651}
   m_EdgeRadius: 0
+--- !u!114 &3046231275564274168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9127997680035544490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a19ab1f38724e4e4e86fc6464b504d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: -0.1, y: -0.1, z: 0.1}
+  material: {fileID: 2100000, guid: eb054a3135e267645bbb8d0c634a790d, type: 2}

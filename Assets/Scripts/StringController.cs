@@ -85,7 +85,13 @@ public class StringController : MonoBehaviour
 
     private void UnSetHerring()
     {
-        Destroy(instantiatedHerring);
+        //Destroy(instantiatedHerring);
+        float xVelocity = Mathf.Sign(Random.Range(-1f, 1f)) * Random.Range(1f, 5f);
+        float yVelocity = Random.Range(6f, 8.5f);
+        Vector2 startVelocity = new Vector2(xVelocity, yVelocity);
+        float rotation = Mathf.Sign(Random.Range(-1f, 1f)) * (Random.Range(0f, 40f) + 40f);
+
+        StartCoroutine(AnimateHerringOut(instantiatedHerring, startVelocity, rotation));
         isHerring = false;
         FindObjectOfType<GameController>().AddHerring(); ;
     }
@@ -102,9 +108,11 @@ public class StringController : MonoBehaviour
             }
 
             instantiatedHerring = Instantiate(herringCover);
-            instantiatedHerring.transform.localScale = Vector3.one * .44f;
+            instantiatedHerring.transform.localScale = transform.parent.parent.localScale * instantiatedHerring.transform.localScale.magnitude;
 
             instantiatedHerring.transform.SetParent(this.transform);
+
+            StartCoroutine(AnimateHerringIn(instantiatedHerring, instantiatedHerring.transform.position));
 
             Vector3 position = instantiatedHerring.transform.localPosition;
             position = new Vector3(0, 0, -.1f);
@@ -113,6 +121,53 @@ public class StringController : MonoBehaviour
             isHerring = true;
         }
     }
+
+    IEnumerator AnimateHerringIn(GameObject herring, Vector3 endPosition)
+    {
+        SpriteRenderer image = herring.GetComponent<SpriteRenderer>();
+
+        float time = .1f;
+
+        image.color = new Color(1f, 1f, 1f, 0f);
+        Vector3 startPosition = endPosition + (Vector3.up * 1.2f);
+        Vector3 endScale = herring.transform.localScale;
+        herring.transform.localPosition = startPosition;
+
+        float startRotation = UnityEngine.Random.Range(-9, 9) * 5;
+        float endRotation = -startRotation;
+        herring.transform.localRotation = Quaternion.Euler(0, 0, startRotation);
+
+
+        yield return new WaitForSeconds(.01f * 15);
+
+        for (float i = 0; i < time; i += Time.deltaTime)
+        {
+            herring.transform.localPosition = Vector3.Lerp(startPosition, endPosition, i / time);
+            herring.transform.localScale = Vector3.Lerp(endScale * 3, endScale, i / time);
+            herring.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Lerp(startRotation, endRotation, i / time));
+            image.color = new Color(1f, 1f, 1f, (i / time) * (i / time));
+            yield return null;
+        }
+    }
+
+    IEnumerator AnimateHerringOut(GameObject herring, Vector2 startVelocity, float rotationalVelocity)
+    {
+        SpriteRenderer image = herring.GetComponent<SpriteRenderer>();
+        float time = 1f;
+
+        for (float i = 0; i < time; i += Time.deltaTime)
+        {
+            herring.transform.position += (Vector3)startVelocity * Time.deltaTime;
+            herring.transform.Rotate(Vector3.forward, rotationalVelocity * Time.deltaTime);
+            startVelocity -= Vector2.up * 15f * Time.deltaTime;
+
+            image.color = new Color(1f, 1f, 1f, 1 - ((i / time) * (i / time)));
+            yield return null;
+        }
+        Destroy(herring);
+    }
+
+
 
     void OnMouseDown()
     {
@@ -236,7 +291,7 @@ public class StringController : MonoBehaviour
         {
             return true;
         }
-        else 
+        else
         {
             return false;
         }
