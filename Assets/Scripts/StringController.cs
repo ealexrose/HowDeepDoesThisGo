@@ -20,7 +20,7 @@ public class StringController : MonoBehaviour
     public GameObject herringCover;
     GameObject instantiatedHerring;
     public bool isHerring;
-
+    public LineRenderer lineRenderer;
     private void Update()
     {
         if (dragging == true && Input.GetButtonUp("Fire1"))
@@ -193,7 +193,8 @@ public class StringController : MonoBehaviour
             int requiredChunks = (int)Mathf.Ceil((worldPosition - thisPosition).magnitude / maxStretch);
 
             AlignIndicator(thisPosition, worldPosition);
-            TileStretch(requiredChunks, thisPosition, worldPosition);
+            //TileStretch(requiredChunks, thisPosition, worldPosition);
+            BetterString(thisPosition, worldPosition);
         }
     }
 
@@ -214,7 +215,8 @@ public class StringController : MonoBehaviour
         int requiredChunks = (int)Mathf.Ceil((worldPosition - thisPosition).magnitude / maxStretch);
 
         AlignIndicator(thisPosition, worldPosition);
-        TileStretch(requiredChunks, thisPosition, worldPosition);
+        //TileStretch(requiredChunks, thisPosition, worldPosition);
+        BetterString(thisPosition, worldPosition);
     }
 
     private void TileStretch(int requiredChunks, Vector3 thisPosition, Vector3 worldPosition)
@@ -315,17 +317,25 @@ public class StringController : MonoBehaviour
     public void DestroyString()
     {
         directionIndicator.SetActive(false);
+
         if (outgoingStringTarget != null)
         {
             outgoingStringTarget.GetComponent<StringController>().incomingStringTarget = null;
         }
         outgoingStringTarget = null;
-        foreach (GameObject stringChunk in instantiatedStrings)
-        {
-            Destroy(stringChunk);
-        }
-        instantiatedStrings = new List<GameObject>();
+
+        //foreach (GameObject stringChunk in instantiatedStrings)
+        //{
+        //    Destroy(stringChunk);
+        //}
+        //instantiatedStrings = new List<GameObject>();
+
+        lineRenderer.SetPositions(new[] { Vector3.zero, Vector3.zero });
     }
 
 
+    public void BetterString(Vector3 startPosition, Vector3 endPosition)
+    {
+        lineRenderer.SetPositions(new[] { startPosition, endPosition });
+    }
 }

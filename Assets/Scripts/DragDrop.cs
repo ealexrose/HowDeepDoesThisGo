@@ -16,6 +16,8 @@ public class DragDrop : MonoBehaviour
     private ShadowEffect shadowEffect;
     private bool dragging;
     public Vector3 shadowOffset = new Vector3(-1, -1, 0);
+    public string pickUp = "PaperUp";
+    public string putDown = "PaperDown";
     void Start()
     {
         shadowEffect = GetComponent<ShadowEffect>();
@@ -49,6 +51,8 @@ public class DragDrop : MonoBehaviour
         float planeDist;
         dragPlane.Raycast(camRay, out planeDist);
         offset = target.position - camRay.GetPoint(planeDist);
+
+        AudioManager.instance.Play(pickUp);
     }
 
     void OnMouseDrag()
@@ -68,6 +72,7 @@ public class DragDrop : MonoBehaviour
             target.position -= Vector3.one * .25f;
             shadowEffect.offset -= shadowOffset;
             dragging = false;
+            AudioManager.instance.Play(putDown);
         }
     }
 }
