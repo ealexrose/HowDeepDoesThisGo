@@ -190,10 +190,7 @@ public class StringController : MonoBehaviour
             Vector3 thisPosition = this.transform.position;
             thisPosition.z = -3;
 
-            int requiredChunks = (int)Mathf.Ceil((worldPosition - thisPosition).magnitude / maxStretch);
-
             AlignIndicator(thisPosition, worldPosition);
-            //TileStretch(requiredChunks, thisPosition, worldPosition);
             BetterString(thisPosition, worldPosition);
         }
     }
@@ -202,7 +199,7 @@ public class StringController : MonoBehaviour
     {
         Vector3 direction = (worldPosition - thisPosition);
         direction = direction.normalized;
-        directionIndicator.transform.right = direction;//Quaternion.Euler(0, 0, Mathf.Atan(direction.y/ direction.y) * Mathf.Rad2Deg);
+        directionIndicator.transform.right = direction;
     }
 
     void UpdateString()
@@ -212,61 +209,11 @@ public class StringController : MonoBehaviour
         Vector3 thisPosition = this.transform.position;
         thisPosition.z = -3;
 
-        int requiredChunks = (int)Mathf.Ceil((worldPosition - thisPosition).magnitude / maxStretch);
-
         AlignIndicator(thisPosition, worldPosition);
-        //TileStretch(requiredChunks, thisPosition, worldPosition);
         BetterString(thisPosition, worldPosition);
     }
 
-    private void TileStretch(int requiredChunks, Vector3 thisPosition, Vector3 worldPosition)
-    {
-        if (instantiatedStrings.Count < requiredChunks)
-        {
-            for (int i = instantiatedStrings.Count; i < requiredChunks; i++)
-            {
-                instantiatedStrings.Add(Instantiate(strings[Random.Range(0, strings.Count)]));
-            }
 
-        }
-        else if (instantiatedStrings.Count > requiredChunks)
-        {
-            for (int i = instantiatedStrings.Count - 1; i >= requiredChunks - 1; i--)
-            {
-                Destroy(instantiatedStrings[i]);
-            }
-            instantiatedStrings = instantiatedStrings.GetRange(0, requiredChunks - 1);
-        }
-
-
-        Vector3 directionVector = (worldPosition - thisPosition).normalized;
-
-        for (int i = 0; i < instantiatedStrings.Count; i++)
-        {
-            Vector3 startpoint = thisPosition + (directionVector * i * maxStretch);
-            Vector3 endPoint = thisPosition + (directionVector * (i + 1) * maxStretch);
-            if (Vector3.Distance(endPoint, thisPosition) > Vector3.Distance(worldPosition, thisPosition))
-            {
-                endPoint = worldPosition;
-            }
-
-            Stretch(instantiatedStrings[i], startpoint, endPoint, false);
-
-        }
-    }
-
-    public void Stretch(GameObject _sprite, Vector3 _initialPosition, Vector3 _finalPosition, bool _mirrorZ)
-    {
-        Vector3 centerPos = (_initialPosition + _finalPosition) / 2f;
-        _sprite.transform.position = centerPos;
-        Vector3 direction = _finalPosition - _initialPosition;
-        direction = Vector3.Normalize(direction);
-        _sprite.transform.right = direction;
-        if (_mirrorZ) _sprite.transform.right *= -1f;
-        Vector3 scale = new Vector3(1, 2, 2);
-        scale.x = Vector3.Distance(_initialPosition, _finalPosition) * 1.32f;
-        _sprite.transform.localScale = scale;
-    }
 
     public bool TryAttachString()
     {
@@ -323,12 +270,6 @@ public class StringController : MonoBehaviour
             outgoingStringTarget.GetComponent<StringController>().incomingStringTarget = null;
         }
         outgoingStringTarget = null;
-
-        //foreach (GameObject stringChunk in instantiatedStrings)
-        //{
-        //    Destroy(stringChunk);
-        //}
-        //instantiatedStrings = new List<GameObject>();
 
         lineRenderer.SetPositions(new[] { Vector3.zero, Vector3.zero });
     }
