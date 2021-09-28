@@ -25,7 +25,6 @@ public class StringController : MonoBehaviour
     {
         if (dragging == true && Input.GetButtonUp("Fire1"))
         {
-
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
             if (hit.collider != null)
@@ -124,6 +123,9 @@ public class StringController : MonoBehaviour
 
     IEnumerator AnimateHerringIn(GameObject herring, Vector3 endPosition)
     {
+
+
+
         SpriteRenderer image = herring.GetComponent<SpriteRenderer>();
 
         float time = .1f;
@@ -152,6 +154,10 @@ public class StringController : MonoBehaviour
 
     IEnumerator AnimateHerringOut(GameObject herring, Vector2 startVelocity, float rotationalVelocity)
     {
+
+        string herringRemovalNoise = "HerringRemove" + UnityEngine.Random.Range(1, 2);
+        AudioManager.instance.Play(herringRemovalNoise);
+
         SpriteRenderer image = herring.GetComponent<SpriteRenderer>();
         float time = 1f;
 
@@ -169,23 +175,33 @@ public class StringController : MonoBehaviour
 
 
 
+
     void OnMouseDown()
     {
         if (!isHerring)
         {
+            AudioManager.instance.Play("PinUp");
             DestroyString();
             directionIndicator.SetActive(true);
             instantiatedStrings.Add(Instantiate(strings[Random.Range(0, strings.Count)]));
             currentDragOrigin = this.gameObject.GetComponent<StringController>();
             dragging = true;
+
         }
     }
 
+
+    
     void OnMouseDrag()
     {
+
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         if (!isHerring)
         {
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+
+
             worldPosition.z = -3;
             Vector3 thisPosition = this.transform.position;
             thisPosition.z = -3;
@@ -223,6 +239,7 @@ public class StringController : MonoBehaviour
             {
                 if (incomingStringTarget == null)
                 {
+                    AudioManager.instance.Play("PinDown");
                     currentDragOrigin.outgoingStringTarget = this.gameObject;
                     incomingStringTarget = currentDragOrigin.gameObject;
                     return true;

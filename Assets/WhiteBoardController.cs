@@ -22,9 +22,10 @@ public class WhiteBoardController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        framesUntilRandomText  = 2f;
-        framesToDisplayRandomText = 2f;
+        framesUntilRandomText = 12f;
+        framesToDisplayRandomText = 4f;
         conspiracyLines = conspiracyLineMaster.text.Split('\n');
+        textDisplay.text = "";
     }
 
     // Update is called once per frame
@@ -50,21 +51,29 @@ public class WhiteBoardController : MonoBehaviour
                 framesUntilRandomText -= Time.deltaTime;
             }
         }
-        else 
+        else
         {
             if (framesToDisplayRandomText <= 0)
             {
                 EraseWrite(savedText);
                 displayingConspiracy = false;
             }
-            else 
+            else
             {
                 framesToDisplayRandomText -= Time.deltaTime;
             }
         }
     }
 
-    public void EraseWrite(string displayText) 
+    public void SetSavedString(string textToSave)
+    {
+        savedText = textToSave;
+    }
+    public void IncreaseDisplayTime(float time)
+    {
+        framesUntilRandomText += time;
+    }
+    public void EraseWrite(string displayText)
     {
         StartCoroutine(EraseText(displayText));
     }
@@ -76,14 +85,14 @@ public class WhiteBoardController : MonoBehaviour
             whiteboardMask.material.SetFloat("_EraseLevel", i / runtime);
             yield return null;
         }
-        whiteboardMask.material.SetFloat("_Write",1);
+        whiteboardMask.material.SetFloat("_Write", 1);
         whiteboardMask.material.SetFloat("_EraseLevel", 0);
         textDisplay.text = "";
         yield return new WaitForSeconds(.13f);
         StartCoroutine(WriteText(displayText));
     }
 
-    public IEnumerator WriteText(string displayText) 
+    public IEnumerator WriteText(string displayText)
     {
         textDisplay.text = displayText;
         float runtime = .75f;

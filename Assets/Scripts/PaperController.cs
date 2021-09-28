@@ -19,7 +19,12 @@ public class PaperController : MonoBehaviour
     }
 
 
-
+    /// <summary>
+    /// creates a set of paper game objects and fills them with semi-randomly distributed nodes that can be solved
+    /// </summary>
+    /// <param name="paperCount">the amount of papers to create</param>
+    /// <param name="dataChain">how many legitimate data nodes there are</param>
+    /// <param name="redHerrings">how many false data nodes there are, these are not required to follow puzzle rules</param>
     public void SpawnPapers(int paperCount, DataChain[] dataChain, DataNode[] redHerrings)
     {
 
@@ -91,10 +96,34 @@ public class PaperController : MonoBehaviour
             spawnedPapers[randomPaper].GetComponent<PaperRandomizer>().dataNodeInfo.Add(redHerrings[i]);
         }
     }
+
+    public void SpawnPapers(List<PaperTemplate> paperTemplates) 
+    {
+        CleanBoard();
+
+        spawnedPapers = new List<GameObject>();
+
+        //Spawn each paper and set the position to the desired preset
+        for (int i = 0; i < paperTemplates.Count; i++)
+        {
+            spawnedPapers.Add(Instantiate(paperBase, corkBoard.transform));
+
+
+            spawnedPapers[i].transform.position = new Vector3(10, -10, 0);
+            Vector3 targetPosition = (Vector3)((Vector2)paperTemplates[i].position) + (Vector3.back * (i + 1f) * .6f);
+            StartCoroutine(SlideEvidenceIn(spawnedPapers[i], targetPosition, i));
+            spawnedPapers[i].GetComponent<PaperRandomizer>().dataNodeInfo = new List<DataNode>();
+
+
+            spawnedPapers[i].GetComponent<PaperRandomizer>().usesTemplate = true;
+            spawnedPapers[i].GetComponent<PaperRandomizer>().paperTemplate = paperTemplates[i];
+        }
+    }
+
+
     private void CleanBoard()
     {
         StringController[] stringControllers = FindObjectsOfType<StringController>();
-
         foreach (StringController stringController in stringControllers)
         {
             stringController.DestroyString();
@@ -104,6 +133,8 @@ public class PaperController : MonoBehaviour
             Destroy(spawnedpaper);
         }
     }
+
+
 
     #region board utilities
     private Vector3 GetValidSpawnPosition()
@@ -187,12 +218,16 @@ public class PaperController : MonoBehaviour
         Vector3 startPosition = new Vector3(10, -10, 0);
         yield return new WaitForSeconds(delay);
 
+        string paperWoosh = "Woosh" + UnityEngine.Random.Range(1, 2);
+        AudioManager.instance.Play(paperWoosh);
         for (float i = 0; i < time; i += Time.deltaTime)
         {
             evidence.transform.position = Vector3.Lerp(startPosition, endPosition, (i / time) * (i / time));
             yield return null;
         }
 
+        string paperHit = "Hit" + UnityEngine.Random.Range(1, 4);
+        //AudioManager.instance.Play(paperHit);
     }
 
     #endregion

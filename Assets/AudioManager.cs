@@ -65,7 +65,80 @@ public class AudioManager : MonoBehaviour
 
     }
 
-    public void PlayMusic(string name) 
+    public void PlayFromStart(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return;
+        }
+        s.source.time = 0f;
+        s.source.Play();
+
+    }
+
+    public void Pause(string name) 
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if(s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return;
+        }
+
+        s.source.Pause();
+    }
+
+    public void UnPause(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return;
+        }
+
+        s.source.UnPause();
+    }
+
+    public void SetPitch(string name, float pitch) 
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return;
+        }
+
+        s.source.pitch = pitch;
+    }
+
+    public float GetPitch(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return 0f;
+        }
+
+        return s.source.pitch;
+    }
+
+    public bool IsSoundPlaying(string name) 
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning(name + "not found");
+            return false;
+        }
+
+        return s.source.isPlaying;
+    }
+
+        public void PlayMusic(string name) 
     {
         Sound s = Array.Find(music, sound => sound.name == name);
         if (s == null)
@@ -73,7 +146,6 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning(name + "not found");
             return;
         }
-
         s.source.Play();
     }
 

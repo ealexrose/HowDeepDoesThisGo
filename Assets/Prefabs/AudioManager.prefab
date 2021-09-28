@@ -45,21 +45,63 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - name: ButtonClick
-    clip: {fileID: 8300000, guid: 061ae558b16e5104184c59695e51ce4b, type: 3}
+    clip: {fileID: 8300000, guid: 059a189148a2d6a41980f54c060e7185, type: 3}
     volume: 1
     pitch: 1
     loop: 0
     audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
     source: {fileID: 0}
   - name: PaperUp
-    clip: {fileID: 8300000, guid: fe597f4e19f4fc447bfa609cba45aad5, type: 3}
-    volume: 1
+    clip: {fileID: 8300000, guid: 278fb6820f919174384a77f25d7a3706, type: 3}
+    volume: 0.626
     pitch: 1
     loop: 0
     audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
     source: {fileID: 0}
   - name: PaperDown
-    clip: {fileID: 8300000, guid: 4a529a5dd6295834f951430d16ff9e03, type: 3}
+    clip: {fileID: 8300000, guid: a1afd5134c25eda45b2289cfbeb5e37c, type: 3}
+    volume: 0.14
+    pitch: 1
+    loop: 0
+    audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
+    source: {fileID: 0}
+  - name: PinDown
+    clip: {fileID: 8300000, guid: 9ca1a31585fc58840b959899c7fbb29d, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
+    source: {fileID: 0}
+  - name: PinUp
+    clip: {fileID: 8300000, guid: c21f15c50e9c10c45a162dd70a378557, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
+    source: {fileID: 0}
+  - name: Hit1
+    clip: {fileID: 8300000, guid: 067c428cbe45c2846bbbfed1f4349a5c, type: 3}
+    volume: 0.708
+    pitch: 1
+    loop: 0
+    audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
+    source: {fileID: 0}
+  - name: Rip1
+    clip: {fileID: 8300000, guid: 6a8f1ffc42616714aaab0e97bd7b05b8, type: 3}
+    volume: 0.256
+    pitch: 0.73
+    loop: 0
+    audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
+    source: {fileID: 0}
+  - name: HerringRemove2
+    clip: {fileID: 8300000, guid: 7394cfecb2e641f4fa505de4ea5784b8, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    audioMixerGroup: {fileID: -1127873617379022809, guid: ee886acb559d23249838608b7a9c5449, type: 2}
+    source: {fileID: 0}
+  - name: HerringRemove1
+    clip: {fileID: 8300000, guid: c8b78a412068f0e4bb64c95129423988, type: 3}
     volume: 1
     pitch: 1
     loop: 0

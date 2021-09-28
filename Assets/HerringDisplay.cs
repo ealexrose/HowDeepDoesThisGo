@@ -62,6 +62,7 @@ public class HerringDisplay : MonoBehaviour
 
         StartCoroutine(AnimateHerringOut(displayedHerrings[index]));
         displayedHerrings[index] = null;
+        AudioManager.instance.Play("Rip1");
 
     }
 
@@ -100,10 +101,14 @@ public class HerringDisplay : MonoBehaviour
             image.color = new Color(1f, 1f, 1f, (i / time) * (i / time));
             yield return null;
         }
+        string paperHit = "Hit" + UnityEngine.Random.Range(1, 4);
+        AudioManager.instance.Play(paperHit);
     }
 
     IEnumerator AnimateHerringOut(GameObject herring)
     {
+
+
         Image image = herring.GetComponent<Image>();
 
         Vector3 startPosition = herring.transform.localPosition;
@@ -128,7 +133,8 @@ public class HerringDisplay : MonoBehaviour
             image.color = new Color(1f, 1f, 1f, 1 - ((i / time) * (i / time)));
             yield return null;
         }
-
+        string paperHit = "Hit" + UnityEngine.Random.Range(1, 4);
+        AudioManager.instance.Play(paperHit);
         Destroy(herringContainer);
 
     }
