@@ -21,6 +21,12 @@ public class StringController : MonoBehaviour
     GameObject instantiatedHerring;
     public bool isHerring;
     public LineRenderer lineRenderer;
+    public PaperController paperController;
+
+    private void Awake()
+    {
+        paperController = FindObjectOfType<PaperController>();
+    }
     private void Update()
     {
         if (dragging == true && Input.GetButtonUp("Fire1"))
@@ -202,9 +208,9 @@ public class StringController : MonoBehaviour
 
 
 
-            worldPosition.z = -3;
+            worldPosition.z = paperController.GetTopPaperDepth() + -1f;
             Vector3 thisPosition = this.transform.position;
-            thisPosition.z = -3;
+            thisPosition.z = paperController.GetTopPaperDepth() + -1f;
 
             AlignIndicator(thisPosition, worldPosition);
             BetterString(thisPosition, worldPosition);
@@ -221,11 +227,21 @@ public class StringController : MonoBehaviour
     void UpdateString()
     {
         Vector3 worldPosition = outgoingStringTarget.transform.position;
-        worldPosition.z = -3;
         Vector3 thisPosition = this.transform.position;
-        thisPosition.z = -3;
+
+        worldPosition.z = -2f;
+        thisPosition.z = -2f;
 
         AlignIndicator(thisPosition, worldPosition);
+
+        float zPosition = Mathf.Min(this.transform.position.z + -.5f, outgoingStringTarget.transform.position.z + -.5f);
+
+        thisPosition.z = zPosition;//this.transform.position.z + -.5f;
+
+        worldPosition.z = zPosition;//this.transform.position.z + -.5f;//Mathf.Clamp(outgoingStringTarget.transform.position.z + -.5f, this.transform.position.z + -1f, this.transform.position.z -.5f);
+
+
+
         BetterString(thisPosition, worldPosition);
     }
 

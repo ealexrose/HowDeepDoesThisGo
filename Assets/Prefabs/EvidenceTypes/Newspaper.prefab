@@ -26,16 +26,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269558083969957518}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.0022273264, w: 0.99999756}
   m_LocalPosition: {x: 0, y: 0, z: -0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 915122036819275070}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.255}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.74, y: 7.55}
+  m_AnchoredPosition: {x: 6.74, y: 7.52}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &284268023237679100
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: UNDISCOVERED CONTINENT
+  m_text: IM TRAPPED IN THE NEWSPAPER, HELP!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cf51db6ec72c7c940b3fb6399b195a79, type: 2}
   m_sharedMaterial: {fileID: -5822344196931710786, guid: cf51db6ec72c7c940b3fb6399b195a79, type: 2}
@@ -184,6 +184,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textList: {fileID: 4900000, guid: 845082d43f0c5484198425b2eb681b17, type: 3}
+  alternateSplitter: 1
+  alternateSplitChar: 124
 --- !u!1 &2813642529086040603
 GameObject:
   m_ObjectHideFlags: 0

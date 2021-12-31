@@ -11,11 +11,15 @@ public class PaperController : MonoBehaviour
     public List<GameObject> spawnedPapers;
     public List<GameObject> spawnRegions;
     public float[] regionWeights;
+    public bool debugRender;
+    List<Vector2> debugCorners;
     // Start is called before the first frame update
     void Awake()
     {
+        debugCorners = new List<Vector2>();
         spawnedPapers = new List<GameObject>();
         SetRegionWeights();
+
     }
 
 
@@ -97,7 +101,7 @@ public class PaperController : MonoBehaviour
         }
     }
 
-    public void SpawnPapers(List<PaperTemplate> paperTemplates) 
+    public void SpawnPapers(List<PaperTemplate> paperTemplates)
     {
         CleanBoard();
 
@@ -147,7 +151,7 @@ public class PaperController : MonoBehaviour
             countedWeight += regionWeights[i];
             if (countedWeight >= randomRegionValue)
             {
-                selectedRegion = 0;
+                selectedRegion = i;
                 break;
             }
         }
@@ -155,14 +159,17 @@ public class PaperController : MonoBehaviour
         float randX = UnityEngine.Random.Range(-region.size.x / 2f, region.size.x / 2f) * spawnRegions[selectedRegion].transform.localScale.x;
         float randY = UnityEngine.Random.Range(-region.size.y / 2f, region.size.y / 2f) * spawnRegions[selectedRegion].transform.localScale.y;
 
-        Vector3 spawnPosition = new Vector3(randX, randY, 0f) + spawnRegions[selectedRegion].transform.position;
+        Vector3 spawnPosition = new Vector3(randX, randY, 0f) + spawnRegions[selectedRegion].transform.position + new Vector3(region.offset.x, region.offset.y, 0);
         return spawnPosition;
     }
 
     private void SetRegionWeights()
     {
+
         float totalArea = 0;
         float[] regionSizes = new float[spawnRegions.Count];
+        regionWeights = new float[regionSizes.Length];
+        debugCorners.Clear();
 
         for (int i = 0; i < regionSizes.Length; i++)
         {
@@ -171,12 +178,21 @@ public class PaperController : MonoBehaviour
                 BoxCollider2D spawnRegion = spawnRegions[i].GetComponent<BoxCollider2D>();
                 regionSizes[i] = (spawnRegion.size.x * spawnRegions[i].transform.localScale.x) * (spawnRegion.size.y * spawnRegions[i].transform.localScale.y);
                 totalArea += regionSizes[i];
+                float xLength = (spawnRegion.size.x / 2f);
+                float xOffset = spawnRegion.transform.localPosition.x + spawnRegion.offset.x;
+                float yLength = (spawnRegion.size.y / 2f);
+                float yOffset = spawnRegion.transform.localPosition.y + spawnRegion.offset.y;
+                debugCorners.Add(new Vector2(xLength + xOffset, yLength + yOffset));
+                debugCorners.Add(new Vector2(-xLength + xOffset, yLength + yOffset));
+                debugCorners.Add(new Vector2(xLength + xOffset, -yLength + yOffset));
+                debugCorners.Add(new Vector2(-xLength + xOffset, -yLength + yOffset));
             }
             catch
             {
                 Debug.LogError(spawnRegions[i] + " does not have a BoxCollider2D on it or it cannot be found");
             }
         }
+
         for (int i = 0; i < regionWeights.Length; i++)
         {
             regionWeights[i] = regionSizes[i] / totalArea;
@@ -184,27 +200,32 @@ public class PaperController : MonoBehaviour
     }
 
 
-    public void ReorderPapers(int newTop) 
+    public void ReorderPapers(int newTop)
     {
         spawnedPapers.Add(spawnedPapers[newTop]);
         spawnedPapers.RemoveAt(newTop);
-        for (int i = 0; i < spawnedPapers.Count; i++) 
+        for (int i = 0; i < spawnedPapers.Count; i++)
         {
-            spawnedPapers[i].transform.localPosition = new Vector3(spawnedPapers[i].transform.localPosition.x, spawnedPapers[i].transform.localPosition.y, (i + 1f) * -.6f);
+            spawnedPapers[i].transform.localPosition = new Vector3(spawnedPapers[i].transform.localPosition.x, spawnedPapers[i].transform.localPosition.y, (i + 1f) * -1f);
         }
-    
+
     }
 
-    public int GetPaperIndex(GameObject targetPaper) 
+    public int GetPaperIndex(GameObject targetPaper)
     {
-        for (int i = 0; i < spawnedPapers.Count; i++) 
+        for (int i = 0; i < spawnedPapers.Count; i++)
         {
-            if (spawnedPapers[i] == targetPaper) 
+            if (spawnedPapers[i] == targetPaper)
             {
                 return i;
             }
         }
         return spawnedPapers.Count - 1;
+    }
+
+    public float GetTopPaperDepth() 
+    {
+        return spawnedPapers[spawnedPapers.Count - 1].transform.position.z;
     }
     #endregion
 
@@ -231,4 +252,18 @@ public class PaperController : MonoBehaviour
     }
 
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        if (debugRender)
+        {
+            Gizmos.color = Color.red;
+            foreach (Vector2 spawnCorner in debugCorners)
+            {
+                Gizmos.DrawSphere(spawnCorner, 1f);
+            }
+
+
+        }
+    }
 }

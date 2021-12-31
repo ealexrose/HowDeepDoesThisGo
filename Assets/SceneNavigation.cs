@@ -24,4 +24,10 @@ public class SceneNavigation : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
     }
+
+    public void MainMenu() 
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+    
 }

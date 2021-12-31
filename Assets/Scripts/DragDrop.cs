@@ -39,11 +39,15 @@ public class DragDrop : MonoBehaviour
     {
         dragging = true;
 
-        target.position += Vector3.one * .25f;
+        target.position += (Vector3)Vector2.one * .25f;
+        
         shadowEffect.offset += shadowOffset;
         PaperController paperController = FindObjectOfType<PaperController>();
         int myIndex = paperController.GetPaperIndex(transform.parent.gameObject);
         paperController.ReorderPapers(myIndex);
+        target.position -= Vector3.forward * 2f;
+
+
 
         dragPlane = new Plane(myMainCamera.transform.forward, target.position);
         Ray camRay = myMainCamera.ScreenPointToRay(Input.mousePosition);
@@ -69,7 +73,8 @@ public class DragDrop : MonoBehaviour
     {
         if (dragging)
         {
-            target.position -= Vector3.one * .25f;
+            target.position -= (Vector3)Vector2.one * .25f;
+            target.position += Vector3.forward * 2f;
             shadowEffect.offset -= shadowOffset;
             dragging = false;
             AudioManager.instance.Play(putDown);

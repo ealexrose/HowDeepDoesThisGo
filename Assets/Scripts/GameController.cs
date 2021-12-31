@@ -23,7 +23,6 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public DataNode[] redHerringNodes;
     public SolveChecker solveChecker;
-
     public WhiteBoardController chainDisplay;
 
     [SerializeField]
